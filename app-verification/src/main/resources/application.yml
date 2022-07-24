@@ -6,6 +6,11 @@ spring:
     consumer:
       group-id: onboarding-verification-consumer
 
+opentracing:
+  jaeger:
+    http-sender:
+      url: ${JAEGER_URL:http://localhost:14268/api/traces}
+
 server:
   port: 8082
 

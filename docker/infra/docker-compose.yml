@@ -77,6 +77,17 @@ services:
           memory: 1G
           cpus: 2
 
+  jaeger-allinone:
+    image: jaegertracing/all-in-one:1.25
+    container_name: jaeger
+    networks:
+      - app_network
+    ports:
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "16686:16686"
+      - "14268:14268"
+
 networks:
   app_network:
     name: app_network
