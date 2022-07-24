@@ -1,20 +1,13 @@
 spring:
   application:
-    name: Onboarding Application
-  datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/database}
-    username: user
-    password: password
-  jpa:
-    hibernate:
-      ddl-auto: update
+    name: Verification Application
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
-      group-id: onboarding-application-consumer
+      group-id: onboarding-verification-consumer
 
 server:
-  port: 8081
+  port: 8082
 
 app:
   kafka:

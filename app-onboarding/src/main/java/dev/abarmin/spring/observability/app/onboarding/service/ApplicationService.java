@@ -4,7 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.abarmin.spring.observability.app.onboarding.event.publisher.ApplicationEventPublisher;
 import dev.abarmin.spring.observability.app.onboarding.model.Applicant;
+import dev.abarmin.spring.observability.app.onboarding.model.IdentifyVerification;
+import dev.abarmin.spring.observability.app.onboarding.model.VerificationStatus;
 import dev.abarmin.spring.observability.app.onboarding.repository.ApplicantRepository;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
@@ -19,10 +24,32 @@ public class ApplicationService {
   private final ObjectMapper objectMapper;
   private final ApplicationEventPublisher eventPublisher;
 
-  public Applicant create(final Applicant applicant) {
+  public Applicant save(final Applicant applicant) {
+    if (applicant.getIdentifyVerification() == null) {
+      final IdentifyVerification verification = new IdentifyVerification();
+      verification.setRequestSent(LocalDateTime.now());
+      applicant.setIdentifyVerification(verification);
+    }
     final Applicant savedApplicant = repository.save(applicant);
     eventPublisher.applicantCreated(savedApplicant);
     return savedApplicant;
+  }
+
+  public Applicant updateVerification(final Applicant applicant,
+                                      final VerificationStatus status) {
+
+    final IdentifyVerification verification =
+        Optional.ofNullable(applicant.getIdentifyVerification())
+            .orElse(new IdentifyVerification());
+    verification.setResponseReceived(LocalDateTime.now());
+    verification.setStatus(status);
+    applicant.setIdentifyVerification(verification);
+
+    return repository.save(applicant);
+  }
+
+  public Optional<Applicant> findOne(final Long applicantId) {
+    return repository.findById(applicantId);
   }
 
   @SneakyThrows

@@ -6,6 +6,7 @@ import dev.abarmin.spring.observability.app.onboarding.service.ApplicationServic
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +28,19 @@ public class ApplicationController {
   public Applicant createApplication(final @RequestBody Applicant applicant) {
     log.info("Request to create applicant {}", applicant);
 
-    return applicationService.create(applicant);
+    return applicationService.save(applicant);
+  }
+
+  @GetMapping("/applicants/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  public Applicant viewApplicant(final @PathVariable("id") Long id) {
+    log.info("Reading applicant with id {}", id);
+
+    return applicationService.findOne(id)
+        .orElseThrow(() -> new RuntimeException(String.format(
+            "No applicant with id %s",
+            id
+        )));
   }
 
   @ResponseStatus(HttpStatus.OK)

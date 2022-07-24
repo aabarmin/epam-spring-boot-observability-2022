@@ -1,6 +1,7 @@
 package dev.abarmin.spring.observability.app.onboarding.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import lombok.Data;
@@ -12,11 +13,11 @@ import lombok.Data;
 @Embeddable
 public class IdentifyVerification {
   @Column(name = "idv_request_sent")
-  private LocalDate requestSent;
+  private LocalDateTime requestSent;
 
   @Column(name = "idv_response_received")
-  private LocalDate responseReceived;
+  private LocalDateTime responseReceived;
 
   @Column(name = "idv_status")
-  private String status;
+  private VerificationStatus status = VerificationStatus.PENDING;
 }
