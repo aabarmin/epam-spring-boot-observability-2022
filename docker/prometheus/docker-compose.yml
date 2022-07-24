@@ -2,7 +2,18 @@ version: '3'
 
 services:
   prometheus:
-
+    build:
+      context: .
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: 1
+    networks:
+      - app_network
 
 networks:
   app_network:

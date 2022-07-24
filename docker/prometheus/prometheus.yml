@@ -1,0 +1,10 @@
+global:
+  scrape_interval: 5s
+
+scrape_configs:
+  - job_name: 'docker_job'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets:
+        - app-onboarding:8080
+        - app-verification:8080
