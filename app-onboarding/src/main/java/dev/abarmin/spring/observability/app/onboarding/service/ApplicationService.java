@@ -7,11 +7,15 @@ import dev.abarmin.spring.observability.app.onboarding.model.Applicant;
 import dev.abarmin.spring.observability.app.onboarding.model.IdentifyVerification;
 import dev.abarmin.spring.observability.app.onboarding.model.VerificationStatus;
 import dev.abarmin.spring.observability.app.onboarding.repository.ApplicantRepository;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Timer;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -24,6 +28,10 @@ public class ApplicationService {
   private final ObjectMapper objectMapper;
   private final ApplicationEventPublisher eventPublisher;
 
+  @Autowired
+  private Timer verificationTimer;
+
+  @Timed("applicants.save-time")
   public Applicant save(final Applicant applicant) {
     if (applicant.getIdentifyVerification() == null) {
       final IdentifyVerification verification = new IdentifyVerification();
@@ -44,6 +52,13 @@ public class ApplicationService {
     verification.setResponseReceived(LocalDateTime.now());
     verification.setStatus(status);
     applicant.setIdentifyVerification(verification);
+
+    verificationTimer.record(
+        Duration.between(
+            verification.getRequestSent(),
+            verification.getResponseReceived()
+        )
+    );
 
     return repository.save(applicant);
   }
