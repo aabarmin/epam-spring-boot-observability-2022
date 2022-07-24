@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  prometheus:
+
+
+networks:
+  app_network:
+    name: app_network

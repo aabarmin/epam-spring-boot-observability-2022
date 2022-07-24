@@ -3,6 +3,7 @@ version: '3'
 services:
   app-onboarding:
     image: app-onboarding
+    container_name: app-onboarding
     networks:
       - app_network
     ports:
@@ -11,14 +12,25 @@ services:
       SERVER_PORT: 8080
       DATABASE_URL: jdbc:postgresql://postgres:5432/database
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: 1
 
   app-verification:
     image: app-verification
+    container_name: app-verification
     networks:
       - app_network
     environment:
       SERVER_PORT: 8080
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: 1
 
 networks:
   app_network:
